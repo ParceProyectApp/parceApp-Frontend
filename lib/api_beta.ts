@@ -171,12 +171,16 @@ export const statusConfig: Record<
 
 
 export type AdminRestaurantData = {
+  id?: string
   code: string
   nombre: string
   nit: string
   pais: string
   ciudad: string
   direccion: string
+  description?: string
+  latitude: number
+  longitude: number
   createdBy: string
   createdAt: string
 }
@@ -189,6 +193,8 @@ export const DEMO_RESTAURANTS: Record<string, AdminRestaurantData> = {
     pais: 'Colombia',
     ciudad: 'Medellín',
     direccion: 'Cra. 35 #8A-12, El Poblado',
+    latitude: 6.209,
+    longitude: -75.565,
     createdBy: 'admin@mesa.app',
     createdAt: '02 Jul 2026',
   },
@@ -199,6 +205,8 @@ export const DEMO_RESTAURANTS: Record<string, AdminRestaurantData> = {
     pais: 'Colombia',
     ciudad: 'Bogotá',
     direccion: 'Calle 93 #11-27, Chicó',
+    latitude: 4.676,
+    longitude: -74.047,
     createdBy: 'admin@mesa.app',
     createdAt: '28 Jun 2026',
   },
@@ -209,6 +217,8 @@ export const DEMO_RESTAURANTS: Record<string, AdminRestaurantData> = {
     pais: 'Colombia',
     ciudad: 'Medellín',
     direccion: 'Calle 10 #20-30',
+    latitude: 6.234,
+    longitude: -75.567,
     createdBy: 'admin@parce.app',
     createdAt: '06 Jul 2026',
   },

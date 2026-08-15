@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { ThemeToggle } from "@/components/reusable/theme";
 import { Avatar } from "@/components/ui/avatar";
-import { Dashboard } from "./screen/dasboard";
+import Dashboard from "./screen/dasboard";
 
 export function OwnerDashboardContent({ restaurant, onLogout }: { restaurant: AdminRestaurantData; onLogout: () => void }) {
   const { user, logout } = useAuth();
@@ -28,20 +28,6 @@ export function OwnerDashboardContent({ restaurant, onLogout }: { restaurant: Ad
       href: "#",
       icon: (
         <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Settings",
-      href: "#",
-      icon: (
-        <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Logout",
-      href: "#",
-      icon: (
-        <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
   ];
@@ -115,7 +101,7 @@ export function OwnerDashboardContent({ restaurant, onLogout }: { restaurant: Ad
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard />
+      <Dashboard restaurant={restaurant} />
     </div>
   );
 }
@@ -132,7 +118,7 @@ export const Logo = () => {
         animate={{ opacity: 1 }}
         className="font-medium whitespace-pre text-black dark:text-white"
       >
-        Acet Labs
+        Parce Panel
       </motion.span>
     </a>
   );
@@ -148,4 +134,3 @@ export const LogoIcon = () => {
   );
 };
  
-// Dummy dashboard component with content

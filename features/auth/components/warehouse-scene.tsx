@@ -6,7 +6,6 @@ import { Suspense, useState, createContext, useContext } from 'react'
 import type { SelectedObject } from './types'
 import { Ground } from './ground'
 import { Warehouse } from './warehouse'
-import { WalkingPeople } from './walking-people'
 import { InfoPanel } from './info-panel'
 import { WarehouseInventoryProvider } from './warehouse-inventory'
 // Context for selected object state
@@ -61,9 +60,6 @@ function Scene() {
 
       {/* Warehouses */}
       <Warehouse position={[0, 0, 0]} warehouseId="warehouse-1" />
-
-      {/* People walking outside the restaurant */}
-      <WalkingPeople />
 
       {/* Soft contact shadows */}
       <ContactShadows

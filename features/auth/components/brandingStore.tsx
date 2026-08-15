@@ -9,10 +9,12 @@ interface BrandingState {
   restaurantName: string
   logoUrl: string | null
   setBranding: (name: string, logoUrl: string | null) => void
+  initializeFromRestaurant: (restaurantName: string) => void
 }
 
 export const useBrandingStore = create<BrandingState>((set) => ({
   restaurantName: 'My Restaurant',
   logoUrl: null,
   setBranding: (name, logoUrl) => set({ restaurantName: name, logoUrl }),
+  initializeFromRestaurant: (restaurantName: string) => set({ restaurantName }),
 }))

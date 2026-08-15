@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Activity, LocateFixed, Search, Settings, Star, Store } from "lucide-react";
 import { StatCard } from "@/components/reusable/stat-card";
 import { restaurants } from "@/lib/api_beta";
-import { RestaurantMap } from "@/components/reusable/restaurant-map";
+import { RestaurantMap } from "@/components/reusable/restaurant-map-admin";
 import { RestaurantListItem } from "@/components/reusable/restaurant-list-item";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
@@ -110,12 +110,43 @@ const stats = useMemo(() => {
   setGeneratedCode(null);
 
   try {
+    // Geocodificación: convertir dirección + ciudad a coordenadas
+    let latitude = '';
+    let longitude = '';
+
+    if (data.address && data.city) {
+      try {
+        const searchQuery = `${data.address}, ${data.city}, Colombia`;
+        const geocodeResponse = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`
+        );
+        const geocodeData = await geocodeResponse.json();
+
+        if (geocodeData && geocodeData.length > 0) {
+          const { lat, lon } = geocodeData[0];
+          latitude = lat;
+          longitude = lon;
+          console.log("Coordenadas geocodificadas:", { lat, lon, searchQuery });
+        } else {
+          console.warn("No se encontraron coordenadas para la dirección");
+          setErrorMessage("No se pudieron encontrar coordenadas para esta dirección y ciudad. Por favor, verifica los datos.");
+          setIsLoading(false);
+          return;
+        }
+      } catch (geocodeError) {
+        console.error("Error en geocodificación:", geocodeError);
+        setErrorMessage("Error al obtener coordenadas. Por favor, intenta nuevamente.");
+        setIsLoading(false);
+        return;
+      }
+    }
+
     const apiData = {
       ...data,
-      latitude: Number(data.latitude),
-      longitude: Number(data.longitude),
+      latitude: Number(latitude),
+      longitude: Number(longitude),
     };
-    
+
     const response = await api.createRestaurantApi(apiData, token || "");
 
     let codeFound = null;
@@ -325,30 +356,25 @@ useEffect(() => {
                     {errors.nit_rut && <p className="mt-1 text-sm text-red-600">{errors.nit_rut.message as string}</p>}
                   </Field>
                   <Field>
-                    <Label htmlFor="direccion-fisica">Direccion fisica del local</Label>
-                    <Input 
+                    <Label htmlFor="city">Ciudad</Label>
+                    <Input
+                    type="text"
+                    {...register("city")}
+                    placeholder="Ciudad"
+                    />
+                    {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city.message as string}</p>}
+                  </Field>
+                  <Field>
+                    <Label htmlFor="direccion-fisica">Dirección física del local</Label>
+                    <Input
                     type="text"
                     {...register("address")}
-                    placeholder="Direccion fisica del local" 
+                    placeholder="Ej: Calle 123 #45-67"
                     />
                     {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address.message as string}</p>}
-                  </Field>
-                  <Field>
-                    <Label htmlFor="longitud">Longitud</Label>
-                    <Input
-                    type="text"
-                    {...register("longitude")}
-                    placeholder="Longitud"
-                    />
-                    {errors.longitude && <p className="mt-1 text-sm text-red-600">{errors.longitude.message as string}</p>}
-                  </Field>
-                  <Field>
-                    <Label htmlFor="latitud">Latitud</Label>
-                    <Input
-                    type="text"
-                    {...register("latitude")}
-                    placeholder="Latitud" />
-                    {errors.latitude && <p className="mt-1 text-sm text-red-600">{errors.latitude.message as string}</p>}
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Las coordenadas se calcularán automáticamente
+                    </p>
                   </Field>
                   {errorMessage && (
           <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">

@@ -56,15 +56,8 @@ export const ResetPasswordSchema = z.object({
 export const createRestaurantShema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   nit_rut: z.string().min(5, "El NIT/RUT válido es obligatorio"),
+  city: z.string().min(2, "La ciudad es obligatoria"),
   address: z.string().min(5, "La dirección detallada es obligatoria"),
-  latitude: z.string().refine((val) => {
-    const num = Number(val);
-    return !isNaN(num) && num >= -90 && num <= 90;
-  }, "La latitud debe ser un número entre -90 y 90"),
-  longitude: z.string().refine((val) => {
-    const num = Number(val);
-    return !isNaN(num) && num >= -180 && num <= 180;
-  }, "La longitud debe ser un número entre -180 y 180"),
 })
 
 export type SignUpInput = z.infer<typeof SignUpSchema>

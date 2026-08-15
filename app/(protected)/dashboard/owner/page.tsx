@@ -4,7 +4,7 @@ import { ThemeToggle } from "@/components/reusable/theme";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from '@/features/auth/hooks/useAuth'
 import { AlertCircle, BadgeCheck, CalendarRange, CheckCircle2, FileText, HelpCircle, KeyRound, LayoutDashboard, LogOut, MapPin, Search, Settings, Store, UtensilsCrossed } from "lucide-react";
 import {
   DropdownMenu,
@@ -26,18 +26,17 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import { useState, useEffect } from "react";
-import { api } from "@/lib/api";
-import { Separator } from "@/components/ui/separator";
-import { Field } from "@/components/ui/field";
-import { profile } from "console";
-import { AdminRestaurantData } from "@/lib/api_beta";
-import { ActivationScreen } from "@/features/auth/components/activation-screen";
-import { OwnerDashboardContent } from "./dashboard";
+import { useState, useEffect } from 'react'
+import { ActivationScreen } from '@/features/auth/components/activation-screen'
+import { OwnerDashboardContent } from './dashboard'
+import { api } from '@/lib/api'
+import { AdminRestaurantData } from '@/lib/api_beta'
+import { useBrandingStore } from '@/features/auth/components/brandingStore';
 
 export default function OwnerDashboard() {
   const [restaurant, setRestaurant] = useState<AdminRestaurantData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const { initializeFromRestaurant } = useBrandingStore()
 
   const getToken = () => {
     if (typeof document !== 'undefined') {
@@ -58,16 +57,24 @@ export default function OwnerDashboard() {
       try {
         const res = await api.getMyRestaurantApi(token)
         const restaurantData: AdminRestaurantData = {
-          code: res.activation_code || '',
-          nombre: res.name || '',
-          nit: res.nit_rut || '',
-          pais: res.country || 'Colombia',
-          ciudad: res.city || '',
-          direccion: res.address || '',
+          id: res.data?.id,
+          code: res.data?.activation_code || '',
+          nombre: res.data?.name || '',
+          nit: res.data?.nit_rut || '',
+          pais: res.data?.country || 'Colombia',
+          ciudad: res.data?.city || '',
+          direccion: res.data?.address || '',
+          description: res.data?.description || '',
+          latitude: res.data?.latitude || 0,
+          longitude: res.data?.longitude || 0,
           createdBy: 'admin@parce.app',
           createdAt: new Date().toLocaleDateString(),
         }
         setRestaurant(restaurantData)
+        // Inicializar el branding store con el nombre del restaurante
+        if (restaurantData.nombre) {
+          initializeFromRestaurant(restaurantData.nombre)
+        }
       } catch (error) {
         // No tiene restaurante activo, mostrar pantalla de activación
         console.log('No se encontró restaurante activo')
@@ -77,7 +84,7 @@ export default function OwnerDashboard() {
     }
 
     checkExistingRestaurant()
-  }, [token])
+  }, [token, initializeFromRestaurant])
 
   if (isLoading) {
     return (

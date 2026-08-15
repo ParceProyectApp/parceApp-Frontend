@@ -89,7 +89,7 @@ export function RestaurantMap({
     e.preventDefault();
     e.stopPropagation();
     console.log("handleEditSubmit llamado");
-    
+
     if (!restaurantToEdit) {
       console.log("restaurantToEdit es null");
       return;
@@ -105,6 +105,36 @@ export function RestaurantMap({
     try {
       setIsLoading(true);
 
+      // Geocodificación: convertir dirección + ciudad a coordenadas
+      const address = data.address as string;
+      const city = data.city as string;
+      if (address && city) {
+        try {
+          const searchQuery = `${address}, ${city}, Colombia`;
+          const geocodeResponse = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`
+          );
+          const geocodeData = await geocodeResponse.json();
+
+          if (geocodeData && geocodeData.length > 0) {
+            const { lat, lon } = geocodeData[0];
+            data.latitude = lat;
+            data.longitude = lon;
+            console.log("Coordenadas geocodificadas:", { lat, lon, searchQuery });
+          } else {
+            console.warn("No se encontraron coordenadas para la dirección y ciudad");
+            // Si no se encuentran coordenadas, mantener las existentes
+            data.latitude = restaurantToEdit.latitude?.toString() || '';
+            data.longitude = restaurantToEdit.longitude?.toString() || '';
+          }
+        } catch (geocodeError) {
+          console.error("Error en geocodificación:", geocodeError);
+          // En caso de error, mantener las coordenadas existentes
+          data.latitude = restaurantToEdit.latitude?.toString() || '';
+          data.longitude = restaurantToEdit.longitude?.toString() || '';
+        }
+      }
+
       const response = await api.updateRestaurantApi(restaurantToEdit.id, data, token || "");
 
       console.log("Respuesta de la API:", response);
@@ -113,7 +143,7 @@ export function RestaurantMap({
       setIsModalOpen(false);
       setRestaurantToEdit(null);
       console.log("¡Restaurante actualizado con éxito!");
-      
+
       // Recargar la lista de restaurantes
       if (onRefresh) {
         onRefresh();
@@ -256,11 +286,8 @@ export function RestaurantMap({
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <form onSubmit={handleEditSubmit}>
-            <DialogHeader>
+            <DialogHeader className="mb-5">
               <DialogTitle>Editar restaurante</DialogTitle>
-              <DialogDescription>
-                Editar informacion
-              </DialogDescription>
             </DialogHeader>
             <FieldGroup>
               <Field>
@@ -284,40 +311,37 @@ export function RestaurantMap({
                   />
                 </Field>
                 <Field>
+                  <Label htmlFor="city">
+                    Ciudad
+                  </Label>
+                  <Input
+                    name="city"
+                    placeholder="Medellín"
+                    defaultValue={restaurantToEdit?.city}
+                    required
+                  />
+                </Field>
+                <Field>
                   <Label htmlFor="direccion-fisica">
-                    Direccion fisica del local
+                    Dirección física del local
                   </Label>
                   <Input
                     name="address"
-                    placeholder="Direccion fisica del local"
+                    placeholder="Ej: Calle 123 #45-67"
                     defaultValue={restaurantToEdit?.address}
                     required
                   />
-                </Field>
-                <Field>
-                  <Label htmlFor="longitud">Longitud</Label>
-                  <Input
-                    name="longitude"
-                    placeholder="Longitud"
-                    defaultValue={restaurantToEdit?.longitude}
-                    required
-                  />
-                </Field>
-                <Field>
-                  <Label htmlFor="latitud">Latitud</Label>
-                  <Input
-                    name="latitude"
-                    placeholder="Latitud"
-                    defaultValue={restaurantToEdit?.latitude}
-                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Las coordenadas se calcularán automáticamente
+                  </p>
                 </Field>
               </Field>
             </FieldGroup>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="default">Cancel</Button>
               </DialogClose>
-              <Button type="submit" disabled={isLoading}>Guardar</Button>
+              <Button variant="default" type="submit" disabled={isLoading}>Guardar</Button>
             </DialogFooter>
           </form>
         </DialogContent>

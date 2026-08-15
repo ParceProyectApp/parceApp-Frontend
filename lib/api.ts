@@ -175,8 +175,27 @@ export const api = {
     }
 
     return resData;
-  }
+  },
 
+  async updateMyRestaurantApi(data: any, token: string) {
+    const response = await fetch(`${API_URL}/restaurants/my-restaurant/update`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    const resData = await response.json()
+
+    if (!response.ok) {
+      console.error('Error al actualizar restaurante en API:', resData);
+      throw new Error(resData.message || "Error al actualizar el restaurante");
+    }
+
+    return resData;
+  },
 };
 
 
