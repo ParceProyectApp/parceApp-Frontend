@@ -21,15 +21,15 @@ export function RestaurantListItem({
 
   // 🚀 Si el estado existe en statusConfig lo usamos, si no (como 'pending_activation'), usamos este diseño por defecto
   const status = statusConfig[currentStatus] || {
-    label: "Pendiente",
-    badge: "border-amber-200 bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
-    dot: "bg-amber-500",
+    label: "Abierto",
+    badge: "border-green-200 bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400",
+    dot: "bg-green-500",
   }
 
   // 🚀 Controlamos que el rating sea un número antes de aplicarle el .toFixed()
   const displayRating = typeof restaurant?.rating === "number" 
     ? restaurant.rating.toFixed(1) 
-    : "0.0"
+    : "3.5"
 
   return (
     <button
@@ -39,7 +39,7 @@ export function RestaurantListItem({
       className={cn(
         "w-full rounded-lg border p-3 text-left transition-colors",
         active
-          ? "border-primary/50 bg-primary/10"
+          ? "border-primary/50 bg-primary/10 border-l-4 border-black"
           : "border-border bg-card hover:bg-accent",
       )}
     >

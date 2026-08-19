@@ -1,31 +1,5 @@
 "use client";
 
-import { ThemeToggle } from "@/components/reusable/theme";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useAuth } from '@/features/auth/hooks/useAuth'
-import { AlertCircle, BadgeCheck, CalendarRange, CheckCircle2, FileText, HelpCircle, KeyRound, LayoutDashboard, LogOut, MapPin, Search, Settings, Store, UtensilsCrossed } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 import { useState, useEffect } from 'react'
 import { ActivationScreen } from '@/features/auth/components/activation-screen'
 import { OwnerDashboardContent } from './dashboard'
