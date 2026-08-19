@@ -1,108 +1,77 @@
 import { BrandingForm } from "@/features/auth/components/branding-form";
-import { CargoMenu } from "@/features/auth/components/cargo-menu";
-import { warehouses } from "@/features/auth/components/mock-data";
-import { WarehouseLayoutPanel } from "@/features/auth/components/warehouse-layout";
-import { WarehouseInventoryProvider } from "@/features/auth/components/warehouse-inventory";
+
 import dynamic from "next/dynamic";
 import { Suspense, useEffect, useState } from "react";
 import { Map, MapMarker, MarkerContent } from "@/components/ui/map";
 import { Button } from "@/components/ui/button";
-import { Scan, Store, Ticket, MapPin } from "lucide-react";
+import {
+  Scan,
+  Store,
+  Ticket,
+  MapPin,
+  Power,
+  Star,
+  Eye,
+  Search,
+  MousePointerClick,
+  Road,
+  CalendarCheck,
+  RotateCcw,
+  RotateCwIcon,
+  CalendarRange,
+  Drumstick,
+  Pencil,
+  CalendarDays,
+  PhoneCall,
+  Clock,
+} from "lucide-react";
 import { AdminRestaurantData } from "@/lib/api_beta";
+import { StatCardOwner } from "@/components/reusable/stat-card-owner";
+import { ChartAreaInteractive } from "@/components/reusable/chart-area-interactive";
 
-const WarehouseScene = dynamic(
-  () => import('@/features/auth/components/warehouse-scene').then(mod => ({ default: mod.WarehouseScene })),
-  { ssr: false }
-)
+export default function Dashboard({
+  restaurant,
+}: {
+  restaurant: AdminRestaurantData;
+}) {
+  const [showBranding, setShowBranding] = useState(false);
 
-function LoadingFallback() {
+  const actividades = [
+    {
+      icon: Eye,
+      iconBg: "bg-gray-200",
+      iconColor: "text-gray-500",
+      text: (
+        <>
+          24 personas vieron tu <br className="hidden sm:block" />
+          restaurante
+        </>
+      ),
+      time: "Hace 2 horas",
+    },
+    {
+      icon: Star,
+      iconBg: "bg-gray-200",
+      iconColor: "text-gray-500",
+      text: "Recibiste valoración 5 estrellas",
+      time: "Hace 5 horas",
+      quote: "Excelente servicio y la comida espectacular.",
+    },
+    {
+      icon: CalendarCheck,
+      iconBg: "bg-gray-200",
+      iconColor: "text-gray-500",
+      text: "Nueva reserva para 4 personas",
+      time: "Ayer",
+    },
+  ];
+
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-ana-sky to-white">
-      <div className="text-center">
-        <div className="inline-block w-12 h-12 border-4 border-ana-blue border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-ana-dark font-medium">Loading 3D Cargo Management System...</p>
-      </div>
-    </div>
-  )
-}
-
-export default function Dashboard({ restaurant }: { restaurant: AdminRestaurantData }) {
-  const [activeWarehouseLayout, setActiveWarehouseLayout] = useState<string | null>(null)
-  const [showCargoMenu, setShowCargoMenu] = useState(false)
-  const [showBranding, setShowBranding] = useState(false)
-
-  const activeWarehouse = activeWarehouseLayout ? warehouses.find(w => w.id === activeWarehouseLayout) : null
-
-  return (
-    <WarehouseInventoryProvider>
-      <div className="flex flex-1">
-        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-5 dark:border-neutral-700 dark:bg-neutral-900">
-         <header className="z-10 bg-gray-200 dark:bg-neutral-800 rounded-md backdrop-blur-sm border-b border-ana-soft-gray">
-          <div className="max-w-full mx-auto px-5 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="default"
-                onClick={() => setShowBranding(true)}
-                className=""
-              >
-                <Store />
-                Mi tienda
-              </Button>
-
-              <div id="warehouse-buttons" className="flex items-center rounded-xl p-1">
-                <Button
-                  variant="default"
-                  onClick={() => setActiveWarehouseLayout('warehouse-1')}
-                  className=""
-                >
-                  <div className="w-6 h-6 rounded-md bg-ana-blue/10 group-hover:bg-ana-blue flex items-center justify-center transition-colors">
-                    <Scan />
-                  </div>
-                  <span>Almacén 1</span>
-                </Button>
-              </div>
-
-              <Button
-                variant="default"
-                id="cargo-tracking-btn"
-                onClick={() => setShowCargoMenu(true)}
-                className=""
-              >
-                <Ticket />
-                Eventos
-              </Button>
-            </div>
-
-            <div id="live-status" className="flex items-center gap-6">
-              <div className="flex gap-3">
-                <p className="text-base font-semibold text-ana-dark/60">Estado:</p>
-                <p className="text-base font-medium text-green-600 flex items-center gap-1">
-                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  Abierto
-                </p>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-5 grid-rows-5 gap-4 h-full">
-          <div className="col-span-3 row-span-5 h-full">
-            <Suspense fallback={<LoadingFallback />}>
-              <div className="relative flex-1 w-full h-full min-h-0">
-                <WarehouseScene onOpenWarehouseLayout={setActiveWarehouseLayout} />
-              </div>
-            </Suspense>
-            <CargoMenu isOpen={showCargoMenu} onClose={() => setShowCargoMenu(false)} />
-          {activeWarehouse && (
-          <WarehouseLayoutPanel
-            data={activeWarehouse}
-            onClose={() => setActiveWarehouseLayout(null)}
-          />
-        )}
-        <BrandingForm isOpen={showBranding} onClose={() => setShowBranding(false)} restaurant={restaurant} />
-          </div>
-          <div className="col-span-2 row-span-3 col-start-4">
-            <div className="w-full h-full">
+    <div className="min-h-screen w-full overflow-auto">
+      <div className="flex min-h-screen w-full">
+        <div className="flex min-h-screen w-full flex-1 flex-col gap-2 border border-neutral-200 bg-white p-2 md:p-5 dark:border-neutral-700 dark:bg-neutral-900">
+          <header className="flex flex-col mb-3 border rounded-lg">
+            <div className="h-48">
               <Map
                 center={
                   restaurant.latitude && restaurant.longitude
@@ -126,28 +95,168 @@ export default function Dashboard({ restaurant }: { restaurant: AdminRestaurantD
                 )}
               </Map>
             </div>
-          </div>
-          <div className="col-span-2 row-span-2 col-start-4 row-start-4 grid grid-cols-2 grid-rows-2 gap-4">
-            <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700 p-4 flex items-center justify-center gap-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Perfil visto:</span>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">1</span>
+            <div className="rounded-b-lg px-5 py-5">
+              <div className="flex items-center justify-between">
+                <div className="rounded-lg text-black flex gap-2 border border-dashed p-2 items-center mb-2">
+                  <h1 className="text-3xl font-bold">{restaurant.nombre}</h1>
+                  <span className="py-0.5 px-2 bg-emerald-300/20 border border-emerald-300 text-emerald-500 rounded-xl">Abierto ahora</span>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => setShowBranding(true)}><Pencil /> Editar</Button>
+                  <BrandingForm
+                    isOpen={showBranding}
+                    onClose={() => setShowBranding(false)}
+                    restaurant={restaurant}
+                  />
+                  <Button><CalendarDays />Eventos</Button>
+                  <button className="p-2">
+                    <Power className="size-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 pt-2">
+                <span className="text-base text-gray-900 flex gap-2">
+                 <MapPin /> Medellin, Antioquia
+                </span>
+                <span className="flex items-center gap-2">
+                  {" "}
+                  <Star /> 4.8 (+123 reseñas)
+                </span>
+              </div>
             </div>
-            <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700 p-4 flex items-center justify-center gap-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Restaurante Encontrado:</span>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">1</span>
+          </header>
+          <div className="grid grid-cols-5 gap-3">
+            <div className="col-span-3 p-5 rounded-lg border">
+                <h1 className="text-xl font-semibold">Recorridos de tus clientes</h1>
+                <section className="grid grid-cols-2 gap-3 lg:grid-cols-4 pt-5">
+                  <StatCardOwner
+                    icon={Search}
+                    label="Encontrado"
+                    value="865"
+                    porcent="+12%"
+                    hint="Total de restaurantes encontrados"
+                  />
+                  <StatCardOwner
+                    icon={Eye}
+                    label="Perfil Visto"
+                    value="1,248"
+                    porcent="+8%"
+                    hint="Total de perfiles vistos"
+                  />
+                  <StatCardOwner
+                    icon={MousePointerClick}
+                    label="Interacciones"
+                    value="423"
+                    porcent="-3%"
+                    hint="Total de interacciones"
+                  />
+                  <StatCardOwner
+                    icon={Road}
+                    label="Rutas iniciadas"
+                    value="187"
+                    porcent="+24%"
+                    hint="Total de rutas iniciadas"
+                  />
+                </section>
+              </div>
+            <div className="col-span-2 rounded-lg border p-5">
+              <div className="mb-3">
+                <h1 className="text-xl font-semibold">Informacion relevante</h1>
+              </div>
+              <div className="mb-3 border-b border-dashed pb-3">
+                <div className="flex items-center gap-2">
+                  <Drumstick />
+                  <p>Cocina Fusión / Alta Gastronomía</p>
+                </div>
+                <span className="pl-8">Categoría principal</span>
+              </div>
+              <div className="mb-3 border-b border-dashed pb-3">
+                <div className="flex items-center gap-2">
+                  <MapPin />
+                  <p>Cra. 43A #1-50, El Poblado</p>
+                </div>
+                <span className="pl-8">Medellín, Antioquia</span>
+              </div>
+              <div className="mb-3 border-b border-dashed pb-3">
+                <div className="flex items-center gap-2">
+                  <PhoneCall />
+                  <p>+57 300 123 4567</p>
+                </div>
+              </div>
+              <div className="border-b border-dashed pb-3">
+                <div className="flex items-center gap-2">
+                  <Clock />
+                  <p>Hoy: 12:00 PM - 11:00 PM</p>
+                </div>
+                <span className="pl-8">Ver todos los horarios</span>
+              </div>
             </div>
-            <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700 p-4 flex items-center justify-center gap-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Restaurante en opciones:</span>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">1</span>
+
+            <div className="col-span-3 rounded-lg border p-5">
+              <h1 className="text-xl font-semibold mb-3">Rendimiento de interacciones</h1>
+              <div className="flex-1">
+                <ChartAreaInteractive />
+              </div>
             </div>
-            <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700 p-4 flex items-center justify-center gap-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Restaurante analisado:</span>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">1</span>
+            <div className="col-span-2 rounded-lg border p-5">
+              <div className="flex justify-between mb-3">
+                <h1 className="text-xl font-semibold">Actividad reciente</h1>
+                <CalendarRange />
+              </div>
+              <div className="py-5">
+                <ul>
+                  {actividades.map((item, idx) => {
+                    const Icon = item.icon;
+                    const isLast = idx === actividades.length - 1;
+
+                    return (
+                      <li key={idx} className="flex gap-4">
+                        {/* Columna icono + línea conectora */}
+                        <div className="flex flex-col items-center">
+                          <span
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${item.iconBg}`}
+                          >
+                            <Icon
+                              className={`h-4 w-4 ${item.iconColor}`}
+                              strokeWidth={2}
+                            />
+                          </span>
+
+                          {!isLast && (
+                            <span className="my-1 w-px flex-1 bg-slate-200" />
+                          )}
+                        </div>
+
+                        {/* Contenido */}
+                        <div
+                          className={`flex-1 pt-0.5 ${isLast ? "" : "pb-6"}`}
+                        >
+                          <p className="text-sm font-medium leading-snug text-slate-900">
+                            {item.text}
+                          </p>
+
+                          {item.quote && (
+                            <blockquote className="mt-2 rounded-xl bg-indigo-50/70 px-4 py-3 text-sm italic text-slate-600">
+                              "{item.quote}"
+                            </blockquote>
+                          )}
+
+                          <p className="mt-1.5 text-xs text-slate-400">
+                            {item.time}
+                          </p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className="mt-4 flex justify-center">
+                <Button className="bg-white border text-black border-gray-300 w-full">Ver toda la actividad</Button>
+              </div>
             </div>
           </div>
         </div>
-       </div>
       </div>
-    </WarehouseInventoryProvider>
+    </div>
   );
 }
