@@ -196,6 +196,68 @@ export const api = {
 
     return resData;
   },
+
+  async createEventApi(data: any, token: string) {
+    const response = await fetch(`${API_URL}/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    const resData = await response.json()
+
+    if (!response.ok) {
+      console.error('Error al crear evento en API:', resData);
+      throw new Error(resData.message || "Error al crear el evento");
+    }
+
+    return resData;
+  },
+
+  async getEventsApi(token: string, restaurantId?: string) {
+    const url = restaurantId
+      ? `${API_URL}/events?restaurantId=${restaurantId}`
+      : `${API_URL}/events`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    const resData = await response.json()
+
+    if (!response.ok) {
+      console.error('Error al obtener eventos en API:', resData);
+      throw new Error(resData.message || "Error al obtener los eventos");
+    }
+
+    return resData;
+  },
+
+  async deleteEventApi(id: string, token: string) {
+    const response = await fetch(`${API_URL}/events/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    const resData = await response.json()
+
+    if (!response.ok) {
+      console.error('Error al eliminar evento en API:', resData);
+      throw new Error(resData.message || "Error al eliminar el evento");
+    }
+
+    return resData;
+  },
 };
 
 

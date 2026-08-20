@@ -1,5 +1,4 @@
 import { BrandingForm } from "@/features/auth/components/branding-form";
-
 import dynamic from "next/dynamic";
 import { Suspense, useEffect, useState } from "react";
 import { Map, MapMarker, MarkerContent } from "@/components/ui/map";
@@ -24,10 +23,14 @@ import {
   CalendarDays,
   PhoneCall,
   Clock,
+  Music,
+  Hamburger,
+  Martini,
 } from "lucide-react";
 import { AdminRestaurantData } from "@/lib/api_beta";
 import { StatCardOwner } from "@/components/reusable/stat-card-owner";
 import { ChartAreaInteractive } from "@/components/reusable/chart-area-interactive";
+import { EventsModal } from "@/features/auth/components/events-modal";
 
 export default function Dashboard({
   restaurant,
@@ -35,6 +38,7 @@ export default function Dashboard({
   restaurant: AdminRestaurantData;
 }) {
   const [showBranding, setShowBranding] = useState(false);
+  const [showModalEvents, setShowModalEvents] = useState(false);
 
   const actividades = [
     {
@@ -108,7 +112,11 @@ export default function Dashboard({
                     onClose={() => setShowBranding(false)}
                     restaurant={restaurant}
                   />
-                  <Button><CalendarDays />Eventos</Button>
+                  <Button onClick={() => setShowModalEvents(true)}><CalendarDays />Eventos</Button>
+                  <EventsModal
+                    isOpen={showModalEvents}
+                    onClose={() => setShowModalEvents(false)}
+                  />
                   <button className="p-2">
                     <Power className="size-4" />
                   </button>
@@ -160,36 +168,44 @@ export default function Dashboard({
                 </section>
               </div>
             <div className="col-span-2 rounded-lg border p-5">
-              <div className="mb-3">
-                <h1 className="text-xl font-semibold">Informacion relevante</h1>
+              <div className="flex justify-between items-center mb-3">
+                <h1 className="text-xl font-semibold">Eventos Activos</h1>
+                <Ticket className="w-6 h-6" />
               </div>
-              <div className="mb-3 border-b border-dashed pb-3">
-                <div className="flex items-center gap-2">
-                  <Drumstick />
-                  <p>Cocina Fusión / Alta Gastronomía</p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                <div className="bg-gray-100 border border-gray-300 p-2 rounded-md">
+                  <Hamburger />
+                </div>                
+                <div>
+                  <h1 className="font-semibold">2 x 1 En hamburguesas</h1>
+                  <span className="text-sm text-gray-600">Promo todos los martes</span>
                 </div>
-                <span className="pl-8">Categoría principal</span>
-              </div>
-              <div className="mb-3 border-b border-dashed pb-3">
-                <div className="flex items-center gap-2">
-                  <MapPin />
-                  <p>Cra. 43A #1-50, El Poblado</p>
+              </div>   
+
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-100 border border-gray-300 p-2 rounded-md">
+                  <Martini />
+                </div>                
+                <div>
+                  <h1 className="font-semibold">Cata de Vinos</h1>
+                  <span className="text-sm text-gray-600">Evento • Próximo jueves</span>
                 </div>
-                <span className="pl-8">Medellín, Antioquia</span>
-              </div>
-              <div className="mb-3 border-b border-dashed pb-3">
-                <div className="flex items-center gap-2">
-                  <PhoneCall />
-                  <p>+57 300 123 4567</p>
+              </div>   
+
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-100 border border-gray-300 p-2 rounded-md">
+                  <Music />
+                </div>                
+                <div>
+                  <h1 className="font-semibold">Jazz Night Live</h1>
+                  <span className="text-sm text-gray-600">Viernes 8:00 PM</span>
                 </div>
               </div>
-              <div className="border-b border-dashed pb-3">
-                <div className="flex items-center gap-2">
-                  <Clock />
-                  <p>Hoy: 12:00 PM - 11:00 PM</p>
-                </div>
-                <span className="pl-8">Ver todos los horarios</span>
-              </div>
+              <div>
+                <Button className="w-full bg-white border border-gray-300 text-black">Gestionar eventos</Button> 
+              </div>  
+              </div>  
             </div>
 
             <div className="col-span-3 rounded-lg border p-5">

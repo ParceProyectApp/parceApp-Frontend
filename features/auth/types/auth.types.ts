@@ -39,3 +39,16 @@ export interface VerifyEmailCredentials {
   token: string;
   email: string;
 }
+
+export interface EventsDate {
+  name_events: string;
+  type_events: string;
+  description_events: string;
+  conditions_events: string;
+  start_date: Date;
+  start_time: Date;
+  end_date: Date;
+  end_time: Date;
+  event_image: string;
+}
+
